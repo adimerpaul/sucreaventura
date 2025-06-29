@@ -204,11 +204,11 @@ class VentaController extends Controller{
             $query->where('user_id', $user_id ?? $user->id);
         }
 
-        if ($user->role === 'Admin') {
+//        if ($user->role === 'Admin') {
             return $query->get();
-        }else{
-            return [];
-        }
+//        }else{
+//            return [];
+//        }
 
 //        return $query->get();
     }

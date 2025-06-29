@@ -3,11 +3,11 @@
     <q-card flat bordered>
       <q-card-section class="q-pa-xs">
         <div class="row">
-          <div class="col-12">
-            <div :class="`bg-${color} text-center text-white q-pa-xs`">
-              {{agencia}}
-            </div>
-          </div>
+<!--          <div class="col-12">-->
+<!--            <div :class="`bg-${color} text-center text-white q-pa-xs`">-->
+<!--              {{agencia}}-->
+<!--            </div>-->
+<!--          </div>-->
           <div class="col-6 col-md-2">
             <q-input v-model="fecha" type="date" label="Fecha" dense outlined
                      @update:modelValue="getReservas(fecha,agencia)"

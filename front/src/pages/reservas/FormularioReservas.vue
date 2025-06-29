@@ -336,10 +336,10 @@ export default {
   mounted() {
     console.log('agencia '+ this.agencia)
     console.log('color '+ this.color)
-    let cantidad = 20;
-    if (this.agencia === "Ayacucho") {
-      cantidad = 21;
-    }
+    let cantidad = 15;
+    // if (this.agencia === "Ayacucho") {
+    //   cantidad = 21;
+    // }
     for (let i = 0; i < cantidad; i++) {
       this.salas.push({ sala: "Sala " + (i + 1) });
     }

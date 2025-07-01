@@ -45,15 +45,32 @@ class VentaController extends Controller{
 
         }else if ($reporte == 'PRODUCTOS'){
 
-            $productos = Producto::join('detalles', 'productos.id', '=', 'detalles.producto_id')
+//            $productos = Producto::join('detalles', 'productos.id', '=', 'detalles.producto_id')
+//                ->join('ventas', 'detalles.venta_id', '=', 'ventas.id')
+//                ->whereDate('ventas.fecha', '>=', $fechaInicio)
+//                ->whereDate('ventas.fecha', '<=', $fechaFin)
+//                ->where('ventas.user_id', $user_id)
+//                ->where('ventas.anulada', 0)
+//                ->select('productos.id','productos.nombre', 'productos.precio', DB::raw('SUM(detalles.cantidad) as cantidad_total'))
+//                ->groupBy('productos.id','productos.nombre', 'productos.precio')
+//                ->get();
+
+            $productos =Producto::join('detalles', 'productos.id', '=', 'detalles.producto_id')
                 ->join('ventas', 'detalles.venta_id', '=', 'ventas.id')
                 ->whereDate('ventas.fecha', '>=', $fechaInicio)
                 ->whereDate('ventas.fecha', '<=', $fechaFin)
-                ->where('ventas.user_id', $user_id)
+//                ->where('ventas.user_id', $user_id)
                 ->where('ventas.anulada', 0)
                 ->select('productos.id','productos.nombre', 'productos.precio', DB::raw('SUM(detalles.cantidad) as cantidad_total'))
-                ->groupBy('productos.id','productos.nombre', 'productos.precio')
-                ->get();
+                ->groupBy('productos.id','productos.nombre', 'productos.precio');
+//                ->get();
+            error_log('user_id '.$user_id);
+
+            if ($user_id !=''){
+                $productos->where('ventas.user_id', $user_id);
+            }
+
+            $productos = $productos->get();
 
             if ($agencia == 'Ayacucho'){
                 $gaseosa_id = 3;

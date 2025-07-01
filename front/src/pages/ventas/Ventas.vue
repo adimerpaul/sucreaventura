@@ -172,7 +172,7 @@
     </q-card>
   </q-dialog>
 <!--  myElement-->
-  <div id="myElement"></div>
+  <div id="myElement" class="hidden"></div>
 </template>
 
 <script setup>

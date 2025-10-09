@@ -336,7 +336,7 @@ export default {
   mounted() {
     console.log('agencia '+ this.agencia)
     console.log('color '+ this.color)
-    let cantidad = 15;
+    let cantidad = 19;
     // if (this.agencia === "Ayacucho") {
     //   cantidad = 21;
     // }

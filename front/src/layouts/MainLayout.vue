@@ -59,7 +59,7 @@
           header
           class="text-center"
         >
-          <q-img src="/logo.png" width="100px" />
+          <q-img src="/logo.jpg" width="100px" />
         </q-item-label>
 
 <!--        <EssentialLink-->

@@ -112,7 +112,7 @@
     </q-card>
 
     <q-card flat bordered class="q-mt-md">
-      <q-card-section>
+      <q-card-section v-if="$store.user.role === 'Admin'" class="q-pa-xs">
         <q-markup-table wrap-cells dense flat bordered>
           <thead>
           <tr>

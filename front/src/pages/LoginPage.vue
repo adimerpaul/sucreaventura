@@ -7,7 +7,7 @@
             <div class="col-12 col-md-6 q-pa-lg" style="background: rgba(255,255,255,0.75);height: 100vh;backdrop-filter: blur(17px);">
               <div class="row flex flex-center">
                 <div class="col-12 text-center">
-                  <q-img src="logo.png" class="q-ma-md" width="150px"/>
+                  <q-img src="logo.jpg" class="q-ma-md" width="150px"/>
                 </div>
                 <div class="col-12 col-md-2"></div>
                 <div class="col-12 col-md-8 text-h6 text-bold">

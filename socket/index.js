@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
 });
 // ruta cors mandar get
 app.get('/send', (req, res) => {
-    io.emit('reservas', 'Hola desde el servidor');
+    io.emit('reservas-sucre-aventura', 'Hola desde el servidor');
     res.send('Mensaje enviado');
 });
 io.on('connection', (socket) => {
@@ -30,13 +30,9 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
-    socket.on('reservas-Ayacucho', (msg) => {
+    socket.on('reservas-sucre-aventura', (msg) => {
         console.log('message: ' + msg);
-        io.emit('reservas-ayacucho', msg);
-    });
-    socket.on('reservas-Oquendo', (msg) => {
-        console.log('message: ' + msg);
-        io.emit('reservas-oquendo', msg);
+        io.emit('reservas-sucre-aventura', msg);
     });
     socket.broadcast.emit('hi');
 });

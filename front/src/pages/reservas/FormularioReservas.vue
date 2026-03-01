@@ -20,6 +20,17 @@
             <q-btn color="green" label="Reservar" @click="clickReserva" no-caps icon="save" size="11px" :loading="loading" />
 <!--            {{agencia}} {{color}}-->
           </div>
+          <div class="col-6 col-md-2 flex flex-center">
+            <q-btn
+              color="primary"
+              label="Actualizar"
+              @click="getReservas(fecha, agencia)"
+              no-caps
+              icon="refresh"
+              size="11px"
+              :loading="loading"
+            />
+          </div>
           <div class="col-6 col-md-2">
             <q-badge color="indigo" class="q-pa-sm">
               Tiempo Seleccionado: {{ tiempoSeleccionado }}
@@ -325,7 +336,7 @@ export default {
         this.limpiar();
         this.getReservas(this.fecha,this.agencia);
         this.dialogoReservar = false;
-        this.$socket.emit(`reservas-${this.agencia}`)
+        this.$socket.emit('reservas-sucre-aventura')
       }).catch(error => {
         this.$alert.error(error.response.data.message, "Error al confirmar reserva");
       }).finally(() => {
@@ -337,9 +348,6 @@ export default {
     console.log('agencia '+ this.agencia)
     console.log('color '+ this.color)
     let cantidad = 19;
-    // if (this.agencia === "Ayacucho") {
-    //   cantidad = 21;
-    // }
     for (let i = 0; i < cantidad; i++) {
       this.salas.push({ sala: "Sala " + (i + 1) });
     }
@@ -353,17 +361,14 @@ export default {
     }
     this.calcularTotalMinutos();
     this.getReservas(this.fecha,this.agencia)
-    // socketReservas
-    let cm = this;
-    if (!this.$store.socketReservas) {
-      this.$store.socketReservas = {};
-    }
-
-    if (!this.$store.socketReservas[this.agencia]) {
-      this.$socket.on(`reservas-${this.agencia}`, () => {
-        cm.getReservas(this.fecha, this.agencia);
-      });
-      this.$store.socketReservas[this.agencia] = true;
+    this.socketHandler = () => {
+      this.getReservas(this.fecha, this.agencia);
+    };
+    this.$socket.on('reservas-sucre-aventura', this.socketHandler);
+  },
+  beforeUnmount() {
+    if (this.socketHandler) {
+      this.$socket.off('reservas-sucre-aventura', this.socketHandler);
     }
   }
 };

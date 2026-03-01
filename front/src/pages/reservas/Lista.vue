@@ -19,10 +19,16 @@
             <q-select v-model="tipo" label="Tipo" outlined dense :options="['Todo', 'Adelanto', 'Confirmado']"
                       v-if="$store.user.role === 'Admin'"/>
           </div>
-<!--          <div class="col-6 col-md-2">-->
-<!--            <q-select v-model="agencia" label="Agencia" outlined dense :options="['Todo','Ayacucho','Oquendo']"-->
-<!--                      v-if="$store.user.role === 'Admin'"/>-->
-<!--          </div>-->
+          <div class="col-6 col-md-2">
+            <q-select
+              v-model="agencia"
+              label="Agencia"
+              outlined
+              dense
+              :options="['Todo', 'Central', 'Ricardo']"
+              v-if="$store.user.role === 'Admin'"
+            />
+          </div>
           <div class="col-12 col-md-2 flex flex-center">
             <q-btn label="Buscar" color="primary" type="submit" icon="search" no-caps :loading="loading" />
           </div>
@@ -308,9 +314,10 @@ function confirmar(reserva) {
         id : reserva.id,
       })
         .then(response => {
-          proxy.$socket.emit("reservas");
+          proxy.$socket.emit('reservas-sucre-aventura');
           // getReservas()
-          router.push('/reservas')
+          const sucursal = proxy.$store.user?.sucursal
+          router.push(sucursal === 'Ricardo' ? '/reservas/ricardo' : '/reservas')
         })
         .catch(error => {
           // console.log(error)
@@ -325,7 +332,7 @@ function anular(id) {
       loading.value = true
       proxy.$axios.post('reservasAnular', {id})
         .then(response => {
-          proxy.$socket.emit("reservas");
+          proxy.$socket.emit('reservas-sucre-aventura');
           getReservas()
         })
         .catch(error => {

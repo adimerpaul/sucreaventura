@@ -1,6 +1,6 @@
 <template>
   <q-page class="q-pa-xs">
-    <FormularioReservas :agencia="'Oquendo'" :color="'blue'"/>
+    <FormularioReservas :agencia="'Ricardo'" :color="'blue'"/>
   </q-page>
 </template>
 <script>

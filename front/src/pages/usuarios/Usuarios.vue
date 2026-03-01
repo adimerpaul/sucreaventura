@@ -60,7 +60,7 @@
       <template v-slot:body-cell-sucursal="props">
         <q-td :props="props">
           <q-chip :label="props.row.sucursal"
-                  :color="props.row.sucursal === 'Ayacucho' ? 'green' : 'blue'"
+                  :color="props.row.sucursal === 'Central' ? 'green' : 'blue'"
                   text-color="white" dense  size="14px"/>
         </q-td>
       </template>
@@ -82,7 +82,7 @@
 <!--            <q-input v-model="user.email" label="Email" dense outlined hint="" />-->
             <q-input v-model="user.password" label="Contraseña" dense outlined :rules="[val => !!val || 'Campo requerido']" v-if="!user.id" />
             <q-select v-model="user.role" label="Rol" dense outlined :options="roles" :rules="[val => !!val || 'Campo requerido']" />
-<!--            <q-select v-model="user.sucursal" label="Sucursal" dense outlined :options="['Ayacucho', 'Oquendo']" :rules="[val => !!val || 'Campo requerido']" />-->
+            <q-select v-model="user.sucursal" label="Sucursal" dense outlined :options="sucursales" :rules="[val => !!val || 'Campo requerido']" />
 <!--            <q-input v-model="user.codigo" label="Codigo" dense outlined hint="" />-->
 <!--            <q-input v-model="user.gestion" label="Gestion" dense outlined hint="" />-->
 <!--            <q-input v-model="user.bloque" label="Bloque" dense outlined hint="" />-->
@@ -137,12 +137,13 @@ export default {
       gestiones: [],
       filter: '',
       roles: ['Admin', 'Vendedor'],
+      sucursales: ['Central', 'Ricardo'],
       columns: [
         { name: 'actions', label: 'Acciones', align: 'center' },
         { name: 'name', label: 'Nombre', align: 'left', field: 'name' },
         { name: 'username', label: 'Usuario', align: 'left', field: 'username' },
         { name: 'role', label: 'Rol', align: 'left', field: 'role' },
-        // { name: 'sucursal', label: 'Sucursal', align: 'left', field: 'sucursal' }
+        { name: 'sucursal', label: 'Sucursal', align: 'left', field: 'sucursal' }
       ],
       permissions: [],
       dialogPermisos: false
@@ -181,6 +182,7 @@ export default {
         username: '',
         cargo: '',
         role: 'Vendedor',
+        sucursal: 'Central',
       }
       this.actionPeriodo = 'Nuevo'
       this.userDialog = true
@@ -249,7 +251,7 @@ export default {
         })
     },
     userEdit(user) {
-      this.user = { ...user }
+      this.user = { ...user, sucursal: user.sucursal || 'Central' }
       this.actionPeriodo = 'Editar'
       this.userDialog = true
     },

@@ -26,7 +26,7 @@
                 <div style="width: 100px; white-space: normal; overflow-wrap: break-word;">
                   {{ $store.user.name }}
                   <div style="line-height: 0.9">
-<!--                    <q-chip :color="$store.user.sucursal=='Ayacucho'?'green':'blue'" dense size="xs" class="text-white">{{$store.user.sucursal}}</q-chip>-->
+                    <q-chip :color="$store.user.sucursal === 'Central' ? 'green' : 'blue'" dense size="xs" class="text-white">{{ $store.user.sucursal }}</q-chip>
                     <q-chip :color="$store.user.role=='Admin'?'red':'grey'" dense size="xs" class="text-white">{{$store.user.role}}</q-chip>
                   </div>
                 </div>
@@ -121,28 +121,26 @@ onMounted(() => {
   const baseLinks = [
     { title: 'Principal', icon: 'home', link: '/', can: 'Todos' },
     { title: 'Usuarios', icon: 'people', link: '/usuarios', can: 'Admin' },
-    { title: 'Reservas', icon: 'event', link: '/reservas', can: 'Todos', color: 'text-green' },
     { title: 'Confirmar reserva', icon: 'shopping_bag', link: '/reservas/lista', can: 'Todos' },
     { title: 'Productos', icon: 'shopping_cart', link: '/productos', can: 'Admin' },
     { title: 'Nueva Venta', icon: 'add_shopping_cart', link: '/ventas/add', can: 'Todos' },
     { title: 'Ventas', icon: 'storefront', link: '/ventas', can: 'Todos' },
     { title: 'Metricas', icon: 'analytics', link: '/metricas', can: 'Admin' },
   ]
+  const reservasLinks = []
+  if (user.role === 'Admin' || user.sucursal === 'Central') {
+    reservasLinks.push({ title: 'Res. Central', icon: 'event', link: '/reservas', can: 'Todos', color: 'text-green' })
+  }
+  if (user.role === 'Admin' || user.sucursal === 'Ricardo') {
+    reservasLinks.push({ title: 'Res. Ricardo', icon: 'event', link: '/reservas/ricardo', can: 'Todos', color: 'text-blue' })
+  }
 
-  // const sucursalLinks = {
-  //   'Ayacucho': { title: 'Ayacucho', icon: 'event', link: '/reservas', can: 'Todos', color: 'text-green' },
-  //   'Oquendo': { title: 'Oquendo', icon: 'event', link: '/reservasOquendo', can: 'Todos', color: 'text-blue' },
-  // }
-  //
-  // const altSucursal = user.sucursal === 'Ayacucho' ? 'Oquendo' : 'Ayacucho'
-
-  // linksList.value = [
-  //   ...baseLinks.slice(0, 2),
-  //   sucursalLinks[user.sucursal],
-  //   ...baseLinks.slice(2),
-  //   sucursalLinks[altSucursal]
-  // ]
-  linksList.value = baseLinks
+  linksList.value = [
+    baseLinks[0],
+    baseLinks[1],
+    ...reservasLinks,
+    ...baseLinks.slice(2),
+  ]
 })
 
 function toggleLeftDrawer () {

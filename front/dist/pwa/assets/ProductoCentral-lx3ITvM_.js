@@ -1,1 +1,0 @@
-import{_ as r}from"./Producto-D2C-3ohE.js";import{c as o,o as t}from"./index-BoXKdRxj.js";import"./QForm-D0_oIC2-.js";import"./QMarkupTable-B0npqxwF.js";import"./QSpace-DmEhkjNj.js";import"./QPage-QwcOkhvp.js";const f={__name:"ProductoCentral",setup(a){return(e,c)=>(t(),o(r,{agencia:"Central"}))}};export{f as default};

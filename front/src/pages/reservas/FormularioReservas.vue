@@ -347,7 +347,7 @@ export default {
   mounted() {
     console.log('agencia '+ this.agencia)
     console.log('color '+ this.color)
-    let cantidad = 19;
+    let cantidad = this.agencia === 'Ricardo' ? 6 : 19;
     for (let i = 0; i < cantidad; i++) {
       this.salas.push({ sala: "Sala " + (i + 1) });
     }

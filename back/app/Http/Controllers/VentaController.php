@@ -72,12 +72,16 @@ class VentaController extends Controller{
 
             $productos = $productos->get();
 
-            if ($agencia == 'Ayacucho'){
+            $gaseosa_id = null;
+            $pipoca_id = null;
+            $frappe_id = null;
+
+            if ($agencia == 'Ayacucho' || $agencia == 'Central'){
                 $gaseosa_id = 3;
                 $pipoca_id = 14;
                 $frappe_id = 30;
             }
-            if ($agencia == 'Oquendo'){
+            if ($agencia == 'Oquendo' || $agencia == 'Ricardo'){
                 $gaseosa_id = 98;
                 $pipoca_id = 109;
                 $frappe_id = 125;
@@ -201,17 +205,10 @@ class VentaController extends Controller{
         $user = $request->user();
         error_log('agencia: '.$user->sucursal);
 
-        if ($user->sucursal == 'Ayacucho') {
-            $query = Venta::whereBetween('fecha', [$fechaInicio, $fechaFin])
-                ->with('detalles', 'user')
-                ->where('agencia', $user->sucursal)
-                ->orderBy('id', 'desc');
-        } else if ($user->sucursal == 'Oquendo') {
-            $query = Venta::whereBetween('fecha', [$fechaInicio, $fechaFin])
-                ->with('detalles', 'user')
-                ->where('agencia', $user->sucursal)
-                ->orderBy('id', 'desc');
-        }
+        $query = Venta::whereBetween('fecha', [$fechaInicio, $fechaFin])
+            ->with('detalles', 'user')
+            ->where('agencia', $user->sucursal)
+            ->orderBy('id', 'desc');
 
 //        $query = Venta::whereBetween('fecha', [$fechaInicio, $fechaFin])
 //            ->with('detalles', 'user')

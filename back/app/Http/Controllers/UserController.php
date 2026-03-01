@@ -8,22 +8,10 @@ use Illuminate\Http\Request;
 class UserController extends Controller{
     function usersSucursal(Request $request){
         $user = $request->user();
-//        error_log('sucursal: ' . $user->sucursal);
-        if ($user->sucursal == 'Ayacucho') {
-            return User::where('sucursal', $user->sucursal)
-                ->where('id', '!=', 0)
-                ->orderBy('id', 'desc')
-                ->get();
-        }else if ($user->sucursal == 'Oquendo') {
-            return User::where('sucursal', $user->sucursal)
-                ->where('id', '!=', 0)
-                ->orderBy('id', 'desc')
-                ->get();
-        }
-//        return User::where('sucursal', $sucursal)
-//            ->where('id', '!=', 0)
-//            ->orderBy('id', 'desc')
-//            ->get();
+        return User::where('sucursal', $user->sucursal)
+            ->where('id', '!=', 0)
+            ->orderBy('id', 'desc')
+            ->get();
     }
     function login(Request $request){
         $credentials = $request->only('username', 'password');
@@ -54,6 +42,9 @@ class UserController extends Controller{
             ->get();
     }
     function update(Request $request, $id){
+        $request->validate([
+            'sucursal' => 'required|in:Central,Ricardo',
+        ]);
         $user = User::find($id);
         $user->update($request->except('password'));
         return $user;
@@ -70,6 +61,7 @@ class UserController extends Controller{
             'username' => 'required|unique:users',
             'password' => 'required',
             'name' => 'required',
+            'sucursal' => 'required|in:Central,Ricardo',
 //            'email' => 'required|email|unique:users',
         ]);
         $user = User::create($request->all());

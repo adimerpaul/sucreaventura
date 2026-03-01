@@ -8,19 +8,10 @@ use Illuminate\Http\Request;
 class ProductoController extends Controller{
     function index(Request $request){
         $user = $request->user();
-        if($user->sucursal == 'Ayacucho'){
-            return Producto::orderBy('nombre')
-                ->with('productoCombo')
-                ->where('agencia', $user->sucursal)
-                ->get();
-        }
-        if($user->sucursal == 'Oquendo'){
-            return Producto::orderBy('nombre')
-                ->with('productoCombo')
-                ->where('agencia', $user->sucursal)
-                ->get();
-        }
-
+        return Producto::orderBy('nombre')
+            ->with('productoCombo')
+            ->where('agencia', $user->sucursal)
+            ->get();
     }
     function store(Request $request){
         $producto = new Producto();

@@ -17,7 +17,10 @@ class ReservaController extends Controller{
             return response()->json(['message' => 'Ya se ha cerrado la caja de hoy'], 400);
         }
 
-        $reserva = Reserva::find($request->id);
+        $reserva = Reserva::findOrFail($request->id);
+        if ($user->role !== 'Admin' && $reserva->agencia !== $user->sucursal) {
+            return response()->json(['message' => 'No autorizado para confirmar reservas de otra agencia'], 403);
+        }
         $reserva->estado = 'Finalizado';
         $reserva->fecha_confirmacion = date('Y-m-d H:i:s');
         $reserva->user_confirmado_id = $request->user()->id;
@@ -25,7 +28,11 @@ class ReservaController extends Controller{
         return response()->json($reserva);
     }
     function anular(Request $request){
-        $reserva = Reserva::find($request->id);
+        $user = $request->user();
+        $reserva = Reserva::findOrFail($request->id);
+        if ($user->role !== 'Admin' && $reserva->agencia !== $user->sucursal) {
+            return response()->json(['message' => 'No autorizado para anular reservas de otra agencia'], 403);
+        }
         $reserva->estado = 'Cancelado';
         $reserva->anulada = true;
         $reserva->motivo_cancelacion = $request->motivo;
@@ -38,6 +45,7 @@ class ReservaController extends Controller{
         $fechaInicio = $request->fechaInicio;
         $fechaFin = $request->fechaFin;
         $user_id = $request->user_id;
+        $agencia = $request->agencia;
         $user = $request->user();
         $role = $user->role;
         $tipo = $request->tipo; //:options="['Todo', 'Reservado', 'Finalizado', 'Cancelado']"
@@ -60,13 +68,8 @@ class ReservaController extends Controller{
         }
         if($role == 'Vendedor'){
             $query->where('agencia', $user->sucursal);
-        }
-
-        $user = $request->user();
-        if ($user->sucursal == 'Ayacucho') {
-            $query->where('agencia', $user->sucursal);
-        } else if ($user->sucursal == 'Oquendo') {
-            $query->where('agencia', $user->sucursal);
+        } else if ($role == 'Admin' && $agencia && $agencia !== 'Todo') {
+            $query->where('agencia', $agencia);
         }
         $reservas = $query->get();
 
@@ -74,7 +77,13 @@ class ReservaController extends Controller{
     }
     function index(Request $request) {
         $fecha = $request->fecha;
-        $agencia = $request->agencia;
+        $user = $request->user();
+        $agencia = $user->role === 'Admin'
+            ? $request->agencia
+            : $user->sucursal;
+        if (!in_array($agencia, ['Central', 'Ricardo'])) {
+            return response()->json(['message' => 'Agencia inválida'], 422);
+        }
         $reservas = Reserva::whereDate('fecha', $fecha)
             ->whereRaw('(estado = "Reservado" OR estado = "Finalizado")')
             ->where('agencia', $agencia)
@@ -98,12 +107,17 @@ class ReservaController extends Controller{
     function store(Request $request) {
         $hoy = date('Y-m-d');
         $user = $request->user();
+        $agenciaAsignada = $user->role === 'Admin' ? $request->agencia : $user->sucursal;
+        if (!in_array($agenciaAsignada, ['Central', 'Ricardo'])) {
+            return response()->json(['message' => 'Agencia inválida'], 422);
+        }
 
         $verificar = Caja::whereDate('fecha_cierre', $hoy)->where('user_id', $user->id)->first();
         if($verificar){
             return response()->json(['message' => 'Ya se ha cerrado la caja de hoy'], 400);
         }
 
+        $request->merge(['agencia' => $agenciaAsignada]);
         $reservasResponse = $this->index($request);
         $reservas = $reservasResponse->getData(true);
 
@@ -132,7 +146,7 @@ class ReservaController extends Controller{
         $reserva->fecha = $request->fecha;
         $reserva->fecha_creacion = date('Y-m-d H:i:s');
         $reserva->directo = $request->directo;
-        $reserva->agencia = $request->agencia;
+        $reserva->agencia = $agenciaAsignada;
         $reserva->user_id = $user->id;
         $reserva->save();
         if ($request->directo) {

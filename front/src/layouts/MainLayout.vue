@@ -118,29 +118,26 @@ const version =import.meta.env.VITE_API_VERSION
 onMounted(() => {
   const user = JSON.parse(localStorage.getItem('user')) || {}
 
-  const baseLinks = [
+  const links = [
     { title: 'Principal', icon: 'home', link: '/', can: 'Todos' },
     { title: 'Usuarios', icon: 'people', link: '/usuarios', can: 'Admin' },
+    { title: 'Res. Central', icon: 'event', link: '/reservas', can: 'Todos', color: 'text-green' },
     { title: 'Confirmar reserva', icon: 'shopping_bag', link: '/reservas/lista', can: 'Todos' },
-    { title: 'Productos', icon: 'shopping_cart', link: '/productos', can: 'Admin' },
+    { title: 'Prod. Central', icon: 'shopping_cart', link: '/productos', can: 'Admin', color: 'text-green' },
     { title: 'Nueva Venta', icon: 'add_shopping_cart', link: '/ventas/add', can: 'Todos' },
     { title: 'Ventas', icon: 'storefront', link: '/ventas', can: 'Todos' },
     { title: 'Metricas', icon: 'analytics', link: '/metricas', can: 'Admin' },
+    { title: 'Res. Ricardo', icon: 'event', link: '/reservas/ricardo', can: 'Todos', color: 'text-blue' },
+    { title: 'Prod. Ricardo', icon: 'shopping_cart', link: '/productos/ricardo', can: 'Admin', color: 'text-blue' },
   ]
-  const reservasLinks = []
-  if (user.role === 'Admin' || user.sucursal === 'Central') {
-    reservasLinks.push({ title: 'Res. Central', icon: 'event', link: '/reservas', can: 'Todos', color: 'text-green' })
-  }
-  if (user.role === 'Admin' || user.sucursal === 'Ricardo') {
-    reservasLinks.push({ title: 'Res. Ricardo', icon: 'event', link: '/reservas/ricardo', can: 'Todos', color: 'text-blue' })
-  }
 
-  linksList.value = [
-    baseLinks[0],
-    baseLinks[1],
-    ...reservasLinks,
-    ...baseLinks.slice(2),
-  ]
+  linksList.value = links.filter((link) => {
+    if (user.role === 'Admin') return true
+    if (link.link === '/reservas' && user.sucursal !== 'Central') return false
+    if (link.link === '/reservas/ricardo' && user.sucursal !== 'Ricardo') return false
+    if (link.can !== 'Todos') return false
+    return true
+  })
 })
 
 function toggleLeftDrawer () {

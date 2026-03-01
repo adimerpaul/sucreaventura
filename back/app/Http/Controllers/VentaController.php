@@ -199,6 +199,7 @@ class VentaController extends Controller{
         $fechaInicio = $request->fechaInicio;
         $fechaFin = $request->fechaFin;
         $user_id = $request->user_id;
+        $agencia = $request->agencia;
         $fechaInicio = $fechaInicio.' 00:00:00';
         $fechaFin = $fechaFin.' 23:59:59';
 
@@ -207,8 +208,13 @@ class VentaController extends Controller{
 
         $query = Venta::whereBetween('fecha', [$fechaInicio, $fechaFin])
             ->with('detalles', 'user')
-            ->where('agencia', $user->sucursal)
             ->orderBy('id', 'desc');
+
+        if ($user->role !== 'Admin') {
+            $query->where('agencia', $user->sucursal);
+        } else if ($agencia && $agencia !== 'Todo') {
+            $query->where('agencia', $agencia);
+        }
 
 //        $query = Venta::whereBetween('fecha', [$fechaInicio, $fechaFin])
 //            ->with('detalles', 'user')

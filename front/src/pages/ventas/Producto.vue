@@ -2,6 +2,9 @@
   <q-page class="q-pa-xs">
     <q-card flat bordered>
       <q-card-section class="q-pa-xs">
+        <div class="text-subtitle1 text-bold q-mb-sm">
+          Productos {{ props.agencia }}
+        </div>
         <q-form @submit="getProductos">
           <div class="row">
             <div class="col-12 col-md-4">
@@ -102,6 +105,13 @@
 import { ref, onMounted, getCurrentInstance } from "vue";
 import {useQuasar} from "quasar";
 
+const props = defineProps({
+  agencia: {
+    type: String,
+    default: 'Central'
+  }
+})
+
 const { proxy } = getCurrentInstance();
 const productos = ref([]);
 const productosAll = ref([]);
@@ -119,7 +129,11 @@ function filtroProductos() {
 }
 
 function getProductos() {
-  proxy.$axios.get("/productos").then(response => {
+  proxy.$axios.get("/productos", {
+    params: {
+      agencia: props.agencia
+    }
+  }).then(response => {
     productos.value = response.data;
     productosAll.value = response.data;
   });
@@ -147,9 +161,15 @@ function guardarProducto() {
       return
     }
 
-    proxy.$axios.put(`/productos/${producto.value.id}`, producto.value).then(getProductos)
+    proxy.$axios.put(`/productos/${producto.value.id}`, {
+      ...producto.value,
+      agencia: props.agencia
+    }).then(getProductos)
   } else {
-    proxy.$axios.post("/productos", producto.value).then(getProductos)
+    proxy.$axios.post("/productos", {
+      ...producto.value,
+      agencia: props.agencia
+    }).then(getProductos)
   }
 
   modalVisible.value = false

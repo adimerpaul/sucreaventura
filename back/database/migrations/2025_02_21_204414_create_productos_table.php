@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->double('precio', 8, 2);
             $table->integer('stock')->nullable()->default(0);
-            $table->string('agencia')->nullable()->default('Ayacucho');
+            $table->string('agencia')->nullable()->default('Central');
             $table->softDeletes();
             $table->timestamps();
         });

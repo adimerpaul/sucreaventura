@@ -1,0 +1,1 @@
+import{_ as o}from"./Producto-D2C-3ohE.js";import{c as r,o as t}from"./index-BoXKdRxj.js";import"./QForm-D0_oIC2-.js";import"./QMarkupTable-B0npqxwF.js";import"./QSpace-DmEhkjNj.js";import"./QPage-QwcOkhvp.js";const f={__name:"ProductoRicardo",setup(a){return(c,e)=>(t(),r(o,{agencia:"Ricardo"}))}};export{f as default};

@@ -149,7 +149,13 @@ onMounted(() => {
   getProductos();
 });
 function getProductos() {
-  proxy.$axios.get("/productos").then(response => {
+  const localUser = JSON.parse(localStorage.getItem('user') || '{}');
+  const agencia = proxy.$store.user?.sucursal || localUser?.sucursal || 'Central';
+  proxy.$axios.get("/productos", {
+    params: {
+      agencia
+    }
+  }).then(response => {
     productos.value = response.data;
     productosAll.value = response.data;
   });

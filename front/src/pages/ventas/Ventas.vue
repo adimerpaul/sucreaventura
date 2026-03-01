@@ -17,6 +17,17 @@
               />
               <!--              <pre>{{user}}</pre>-->
             </div>
+            <div class="col-12 col-md-2">
+              <q-select
+                v-model="agencia"
+                label="Agencia"
+                outlined
+                dense
+                :options="['Todo', 'Central', 'Ricardo']"
+                v-if="$store.user.role === 'Admin'"
+                @update:modelValue="onChangeAgencia"
+              />
+            </div>
             <div class="col-12 col-md-2 flex flex-center">
               <q-btn style="width: 150px" label="Buscar" color="primary" type="submit" icon="search" no-caps :loading="loading" />
             </div>
@@ -189,6 +200,7 @@ const loading = ref(false);
 const filter = ref("");
 const users = ref([]);
 const user = ref('');
+const agencia = ref('Todo');
 const reporte = ref('CAJA');
 const dialogCaja = ref(false);
 const caja = ref({});
@@ -206,7 +218,13 @@ onMounted(() => {
 });
 
 function getProductos() {
-  proxy.$axios.get("/productos").then(response => {
+  const localUser = JSON.parse(localStorage.getItem('user') || '{}');
+  const agenciaProducto = proxy.$store.user?.sucursal || localUser?.sucursal || 'Central';
+  proxy.$axios.get("/productos", {
+    params: {
+      agencia: agenciaProducto
+    }
+  }).then(response => {
     productos.value = response.data;
   });
 }
@@ -360,17 +378,29 @@ function getUsers() {
   users.value = [
     { id: '', name: 'Todos' }
   ]
-  proxy.$axios.get("/usersSucursal").then(response => {
-    // users.value = response.data;
-    response.data.forEach(user => {
-      users.value.push({ id: user.id, name: user.name });
+  const endpoint = proxy.$store.user.role === 'Admin' ? '/users' : '/usersSucursal';
+  proxy.$axios.get(endpoint).then(response => {
+    response.data.forEach(userItem => {
+      if (proxy.$store.user.role === 'Admin' && agencia.value !== 'Todo' && userItem.sucursal !== agencia.value) {
+        return;
+      }
+      users.value.push({ id: userItem.id, name: userItem.name });
     });
   });
+}
+function onChangeAgencia() {
+  user.value = '';
+  getUsers();
 }
 function getVentas() {
   loading.value = true;
   proxy.$axios.get("/ventas", {
-    params: { fechaInicio: fechaInicio.value, fechaFin: fechaFin.value, user_id: user.value }
+    params: {
+      fechaInicio: fechaInicio.value,
+      fechaFin: fechaFin.value,
+      user_id: user.value,
+      agencia: agencia.value,
+    }
   }).then(response => {
     ventas.value = response.data;
     // for (let venta of ventas.value) {

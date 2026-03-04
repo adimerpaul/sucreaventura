@@ -133,8 +133,8 @@ onMounted(() => {
 
   linksList.value = links.filter((link) => {
     if (user.role === 'Admin') return true
-    if (link.link === '/reservas' && user.sucursal !== 'Central') return false
-    if (link.link === '/reservas/ricardo' && user.sucursal !== 'Ricardo') return false
+    // if (link.link === '/reservas' && user.sucursal !== 'Central') return false
+    // if (link.link === '/reservas/ricardo' && user.sucursal !== 'Ricardo') return false
     if (link.can !== 'Todos') return false
     return true
   })

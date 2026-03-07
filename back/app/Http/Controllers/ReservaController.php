@@ -7,6 +7,20 @@ use App\Models\Reserva;
 use Illuminate\Http\Request;
 
 class ReservaController extends Controller{
+    private function normalizarAgencia(?string $agencia): ?string
+    {
+        if (!$agencia) {
+            return null;
+        }
+        if ($agencia === 'Ayacucho') {
+            return 'Central';
+        }
+        if ($agencia === 'Oquendo') {
+            return 'Ricardo';
+        }
+        return $agencia;
+    }
+
     function confirmar(Request $request){
 
         $hoy = date('Y-m-d');
@@ -77,10 +91,7 @@ class ReservaController extends Controller{
     }
     function index(Request $request) {
         $fecha = $request->fecha;
-        $user = $request->user();
-        $agencia = $user->role === 'Admin'
-            ? $request->agencia
-            : $user->sucursal;
+        $agencia = $this->normalizarAgencia($request->agencia);
         if (!in_array($agencia, ['Central', 'Ricardo'])) {
             return response()->json(['message' => 'Agencia inválida'], 422);
         }
@@ -107,7 +118,7 @@ class ReservaController extends Controller{
     function store(Request $request) {
         $hoy = date('Y-m-d');
         $user = $request->user();
-        $agenciaAsignada = $user->role === 'Admin' ? $request->agencia : $user->sucursal;
+        $agenciaAsignada = $this->normalizarAgencia($request->agencia);
         if (!in_array($agenciaAsignada, ['Central', 'Ricardo'])) {
             return response()->json(['message' => 'Agencia inválida'], 422);
         }
